@@ -155,35 +155,65 @@ Society(int numPeople){
         return x;
     }
 
-    //takes parameters of two people
+ //takes parameters of two people
  public void findTheLove(Person a, Person b) {
-        double loveA = 0;
-        double loveB = 0;
-        double compatibility = 0;
-        if(!a.isMarried() && !b.isMarried() && a.getHappiness() >  30 && b.getHappiness() > 30 && a != b){ //makes sure they are in the same place, not married already, have a high enough happiness, and are not the same person
-            if (a.getAge() > 18 && b.getAge() > 18) {               //makes sure they're at least 18 ;)
-            for (int i = 0; i < a.getHaves().size(); i++) {
-            if (a.getWants().get(i) == b.getHaves().get(i)) {      //compares their haves and wants they were born with to find love
-            loveA++;
-            }
-            if (b.getWants().get(i) == a.getHaves().get(i)) {
-            loveB++;
-            }
-            }
-            if (loveB == 0 || loveA == 0) {                   //can't divide by 0!
-                compatibility = 0;
-            } else if (loveA == 0 || loveB == 0) {            //averages their connections to come up with a random percent which I called compatibility
-                compatibility = 0;
-            } else {
-                compatibility = (loveA + loveB) / 2;
-            }
-            if (compatibility >= 2) {
-                a.gotMarriedTo(b);
-                b.gotMarriedTo(a);
+  double loveA = 0;
+  double loveB = 0;
+  double compatibility = 0;
+  if(!a.isMarried() && !b.isMarried() && a.getHappiness() >  30 && b.getHappiness() > 30 && a != b){ //makes sure they are in the same place, not married already, have a high enough happiness, and are not the same person
+      if (a.getAge() > 18 && b.getAge() > 18) {               //makes sure they're at least 18 ;)
+    for (int i = 0; i < a.getHaves().size(); i++) {
+     if (a.getWants().get(i) == b.getHaves().get(i)) {      //compares their haves and wants they were born with to find love
+      loveA++;
+     }
+     if (b.getWants().get(i) == a.getHaves().get(i)) {
+      loveB++;
+     }
+    }
+    if (loveB == 0 || loveA == 0) {                   //can't divide by 0!
+     compatibility = 0;
+    } else if (loveA == 0 || loveB == 0) {            //averages their connections to come up with a random percent which I called compatibility
+     compatibility = 0;
+    } else {
+     compatibility = (loveA + loveB) / 2;
+    }
+    if (compatibility >= 2) {
+     a.gotMarriedTo(b);
+     b.gotMarriedTo(a);
+    }
+   }
+  }
+  }
+
+public void effectsOfMarriage(){                      //uh oh :O
+    Person currentPerson;
+    Person currentSpouse;
+    for(int i = 0; i < this.population; i++){               //runs through population
+        currentPerson = this.people.get(i);
+        currentSpouse = this.people.get(i).getSpouse();
+        if(currentPerson.isMarried() && !this.couples.contains(currentPerson) && !this.couples.contains(currentSpouse)){        //if they're married and not counted as a couple yet then count them as a couple and add a day to their marriage
+            this.couples.add(currentPerson);
+            this.couples.add(currentSpouse);
+            currentPerson.addDayMarried();
+            currentSpouse.addDayMarried();
+        }else if(currentPerson.isMarried() && this.couples.contains(currentPerson)){                    //if they are already a couple add another day
+            currentPerson.addDayMarried();
+            currentSpouse.addDayMarried();
+            if(currentPerson.getYearsMarried() > 0 && currentPerson.getDaysMarried() % 365 == 0){                    //if they made it a year, make them less happy
+                if(Math.random()*10 > 5 && currentPerson.getYearsMarried() != 40){                                                               // 50% chance they will be more happy as the year passes.... 50% chance they will be sadder
+                    currentPerson.changeHappiness(5);
+                }else{
+                    currentPerson.changeHappiness(-6);
+                }
+                if(currentPerson.getHappiness() < 20 || currentSpouse.getHappiness() < 20 && currentPerson.getYearsMarried() != 40){    // as years go by, happiness decreases... if it gets to be too low... well you get the point
+                    currentPerson.gotDivorcedFrom(currentSpouse);
+                    currentSpouse.gotDivorcedFrom(currentPerson);
+                }
             }
         }
     }
- }
+}
+
 
     //Removes people
     public void removePeople(int amount, String place){
@@ -359,38 +389,6 @@ Society(int numPeople){
         }
     }
   }
-
-public void effectsOfMarriage(){                      //uh oh :O
-    Person currentPerson;
-    Person currentSpouse;
-    for(int i = 0; i < this.population; i++){               //runs through population
-        currentPerson = this.people.get(i);
-        currentSpouse = this.people.get(i).getSpouse();
-        if(currentPerson.isMarried() && !this.couples.contains(currentPerson) && !this.couples.contains(currentSpouse)){        //if they're married and not counted as a couple yet then count them as a couple and add a day to their marriage
-            this.couples.add(currentPerson);
-            this.couples.add(currentSpouse);
-            currentPerson.addDayMarried();
-            currentSpouse.addDayMarried();
-        }else if(currentPerson.isMarried() && this.couples.contains(currentPerson)){                    //if they are already a couple add another day
-            currentPerson.addDayMarried();
-            currentSpouse.addDayMarried();
-            if(currentPerson.getYearsMarried() > 0 && currentPerson.getDaysMarried() % 365 == 0){
-                System.out.println("here");                   //if they made it a year, make them less happy
-                if(Math.random()*10 > 5 && currentPerson.getYearsMarried() != 40){                                                               // 50% chance they will be more happy as the year passes.... 50% chance they will be sadder
-                    currentPerson.changeHappiness(10);
-                }else{
-                    currentPerson.changeHappiness(-14);
-                }
-                if(currentPerson.getHappiness() < 30 || currentSpouse.getHappiness() < 30 && currentPerson.getYearsMarried() != 20){    // as years go by, happiness decreases... if it gets to be too low... well you get the point
-                    currentPerson.gotDivorcedFrom(currentSpouse);
-                    currentSpouse.gotDivorcedFrom(currentPerson);
-                    currentPerson.setSpouseToNull(currentPerson);
-                    currentSpouse.setSpouseToNull(currentSpouse);
-                }
-            }
-        }
-    }
-}
 
   public int societalHappiness(){
     int totalHappiness = 0;
