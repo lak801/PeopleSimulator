@@ -47,6 +47,10 @@ class Person {
 	public Person(int age, String name,String gender,int birthdate,String place, String parent1, String parent2) {
             this.name = name;
             this.age = age;
+            for(int i = 0; i < 10; i++){
+                haves.add((int)(Math.random()*10));
+                wants.add((int)(Math.random()*10));
+            }
             this.depressed = Math.random() < 0.15;
             this.optimistic = Math.random() < 0.15;
             this.happiness = 60;  //start at 60 bc 50 felt too sad for a normal person
@@ -60,11 +64,7 @@ class Person {
             this.place = place;
             this.spouse = null;
             acct = new BankAccount(); // creates a new bank account for each person
-            for(int i = 0; i < 10; i++){
-                haves.add((int)(Math.random()*10));
-                wants.add((int)(Math.random()*10));
-            }
-            for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
                 commonTraits.add((int)(Math.random()*4));
             }
         setHappiness();
@@ -233,8 +233,10 @@ class Person {
         this.spouse.addTimeDivorced();
         this.spouse.daysMarried = 0;
         this.spouse.changeHappiness(20);
-        this.spouse = null;
+    }
 
+    public void setSpouseToNull(Person person){
+        person.spouse = null;
     }
 
     public Person getSpouse(){    //gets spouse if there is spoud. if not, then they are lonely (null)
